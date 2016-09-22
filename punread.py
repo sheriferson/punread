@@ -1,7 +1,10 @@
 import json
 import os.path
 import pickle
+import random
+import re
 import requests
+import sys
 import time
 
 # get the path to punread.py
@@ -10,6 +13,7 @@ pathToMe = os.path.split(pathToMe)[0]
 
 last_updated_path = os.path.join(pathToMe, 'lastupdated.timestamp')
 unread_count_path = os.path.join(pathToMe, 'unread.count')
+links_path = os.path.join(pathToMe, 'links')
 api_token_path = os.path.join(pathToMe, 'api_token')
 
 backup_file = '/Users/sherif/persanalytics/data/unread_pinboard_counts.csv'
@@ -33,6 +37,7 @@ par = {'auth_token': pintoken, 'format': 'json'}
 if os.path.isfile(last_updated_path) and os.path.isfile(unread_count_path):
     last_updated = pickle.load(open(last_updated_path, 'rb'))
     unread_count = pickle.load(open(unread_count_path, 'rb'))
+    links = pickle.load(open(links_path, 'rb'))
 else:
     last_updated = ''
     unread_count = 0
@@ -54,8 +59,28 @@ if last_updated != last_updated_api:
 
     pickle.dump(last_updated_api, open(last_updated_path, 'wb'))
     pickle.dump(unread_count, open(unread_count_path, 'wb'))
+    pickle.dump(links, open(links_path, 'wb'))
 
     log_counts(total_count, unread_count)
     print(unread_count)
+    print('---')
+    print("A selection of random unread bookmarks for your reading pleasure")
+    for ii in range(30):
+        link_index = random.randint(0, unread_count)
+        description = unread[link_index]['description']
+        description = description.replace("|", "+")
+        description = description.replace("'", "’")
+        link_entry = description + " | href=" + unread[link_index]['href'] + " font=mplus-1m-regular color=cadetblue"
+        print(link_entry.encode('ascii', 'ignore').decode('ascii'))
 else:
+    unread = [link for link in links if (link['toread'] == 'yes')]
     print(unread_count)
+    print('---')
+    print("A selection of random unread bookmarks for your reading pleasure")
+    for ii in range(30):
+        link_index = random.randint(0, unread_count)
+        description = unread[link_index]['description']
+        description = description.replace("|", "+")
+        description = description.replace("'", "’")
+        link_entry = description + " | href=" + unread[link_index]['href'] + " font=mplus-1m-regular color=cadetblue"
+        print(link_entry.encode('ascii', 'ignore').decode('ascii'))
