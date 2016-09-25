@@ -19,17 +19,16 @@ last_run_path = os.path.join(pathToMe, 'lastrun.timestamp')
 
 backup_file = '/Users/sherif/persanalytics/data/unread_pinboard_counts.csv'
 
-# check if there's a lastrun.timestamp, and if it's there
-# check if the script ran less than 5 mins ago
-# if yes, quit
-if os.path.isfile(last_run_path):
-    last_run = pickle.load(open(last_run_path, 'rb'))
-    if time.time() - last_run < 300:
-        exit()
-    else:
-        pickle.dump(time.time(), open(last_run_path, 'wb'))
-else:
-    pickle.dump(time.time(), open(last_run_path, 'wb'))
+def print_random_unread_links(unread, n = 30):
+    print('---')
+    print("A selection of random unread bookmarks for your reading pleasure")
+    random_unread_indexes = random.sample(range(1, len(unread)), 30)
+    for ii in random_unread_indexes:
+        description = unread[ii]['description']
+        description = description.replace("|", "+")
+        description = description.replace("'", "’")
+        link_entry = description + " | href=" + unread[ii]['href'] + " font=mplus-1m-regular color=cadetblue"
+        print(link_entry.encode('ascii', 'ignore').decode('ascii'))
 
 def log_counts(total_count, unread_count):
    """
@@ -41,6 +40,23 @@ def log_counts(total_count, unread_count):
 
    with open(backup_file, 'a') as bfile:
        bfile.write(row)
+
+# check if there's a lastrun.timestamp, and if it's there
+# check if the script ran less than 5 mins ago
+# if yes, quit
+if os.path.isfile(last_run_path):
+    last_run = pickle.load(open(last_run_path, 'rb'))
+    if time.time() - last_run < 300:
+        unread_count = pickle.load(open(unread_count_path, 'rb'))
+        print(unread_count)
+        links = pickle.load(open(links_path, 'rb'))
+        unread = [link for link in links if (link['toread'] == 'yes')]
+        print_random_unread_links(unread)
+        exit()
+    else:
+        pickle.dump(time.time(), open(last_run_path, 'wb'))
+else:
+    pickle.dump(time.time(), open(last_run_path, 'wb'))
 
 with open(api_token_path, 'rb') as f:
     pintoken = f.read().strip()
@@ -76,24 +92,8 @@ if last_updated != last_updated_api:
 
     log_counts(total_count, unread_count)
     print(unread_count)
-    print('---')
-    print("A selection of random unread bookmarks for your reading pleasure")
-    random_unread_indexes = random.sample(range(1, unread_count), 30)
-    for ii in random_unread_indexes:
-        description = unread[ii]['description']
-        description = description.replace("|", "+")
-        description = description.replace("'", "’")
-        link_entry = description + " | href=" + unread[ii]['href'] + " font=mplus-1m-regular color=cadetblue"
-        print(link_entry.encode('ascii', 'ignore').decode('ascii'))
+    print_random_unread_links(unread)
 else:
     unread = [link for link in links if (link['toread'] == 'yes')]
     print(unread_count)
-    print('---')
-    print("A selection of random unread bookmarks for your reading pleasure")
-    random_unread_indexes = random.sample(range(1, unread_count), 30)
-    for ii in random_unread_indexes:
-        description = unread[ii]['description']
-        description = description.replace("|", "+")
-        description = description.replace("'", "’")
-        link_entry = description + " | href=" + unread[ii]['href'] + " font=mplus-1m-regular color=cadetblue"
-        print(link_entry.encode('ascii', 'ignore').decode('ascii'))
+    print_random_unread_links(unread)
