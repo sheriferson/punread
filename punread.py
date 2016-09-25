@@ -15,8 +15,21 @@ last_updated_path = os.path.join(pathToMe, 'lastupdated.timestamp')
 unread_count_path = os.path.join(pathToMe, 'unread.count')
 links_path = os.path.join(pathToMe, 'links')
 api_token_path = os.path.join(pathToMe, 'api_token')
+last_run_path = os.path.join(pathToMe, 'lastrun.timestamp')
 
 backup_file = '/Users/sherif/persanalytics/data/unread_pinboard_counts.csv'
+
+# check if there's a lastrun.timestamp, and if it's there
+# check if the script ran less than 5 mins ago
+# if yes, quit
+if os.path.isfile(last_run_path):
+    last_run = pickle.load(open(last_run_path, 'rb'))
+    if time.time() - last_run < 300:
+        exit()
+    else:
+        pickle.dump(time.time(), open(last_run_path, 'wb'))
+else:
+    pickle.dump(time.time(), open(last_run_path, 'wb'))
 
 def log_counts(total_count, unread_count):
    """
