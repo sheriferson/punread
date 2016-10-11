@@ -7,9 +7,8 @@
 # <bitbar.dependencies>python</bitbar.dependencies>
 # <bitbar.abouturl>https://github.com/sheriferson/punread</bitbar.abouturl>
 
-count=$(/usr/local/bin/python3 /Users/sherif/projects/punread/punread.py)
-icon="📖"
-echo "$icon $count"
+links=$(/usr/local/bin/python3 /Users/sherif/projects/punread/punread.py)
+echo "$links"
 
 echo "---"
 echo "📌 Random article | href=https://pinboard.in/random/?type=unread"

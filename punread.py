@@ -19,16 +19,15 @@ last_run_path = os.path.join(pathToMe, 'lastrun.timestamp')
 
 backup_file = '/Users/sherif/persanalytics/data/unread_pinboard_counts.csv'
 
-def print_random_unread_links(unread, n = 30):
-    print('---')
-    print("A selection of random unread bookmarks for your reading pleasure")
+def print_random_unread_links(count, unread, n = 30):
+    count = str(count) + ' | font=SourceSansPro-Regular color=cadetblue\n---\n'
+    sys.stdout.buffer.write(count.encode('utf-8'))
     random_unread_indexes = random.sample(range(1, len(unread)), 30)
     for ii in random_unread_indexes:
         description = unread[ii]['description']
-        description = description.replace("|", "+")
-        description = description.replace("'", "’")
-        link_entry = description + " | href=" + unread[ii]['href'] + " font=mplus-1m-regular color=cadetblue"
-        print(link_entry.encode('ascii', 'ignore').decode('ascii'))
+        description = description.replace("|", "｜")
+        link_entry = '📍 ' + description + " | href=" + unread[ii]['href'] + " font=SourceSansPro-Regular color=cadetblue\n"
+        sys.stdout.buffer.write(link_entry.encode('utf-8'))
 
 def log_counts(total_count, unread_count):
    """
@@ -48,10 +47,9 @@ if os.path.isfile(last_run_path):
     last_run = pickle.load(open(last_run_path, 'rb'))
     if time.time() - last_run < 300:
         unread_count = pickle.load(open(unread_count_path, 'rb'))
-        print(unread_count)
         links = pickle.load(open(links_path, 'rb'))
         unread = [link for link in links if (link['toread'] == 'yes')]
-        print_random_unread_links(unread)
+        print_random_unread_links(unread_count, unread)
         exit()
     else:
         pickle.dump(time.time(), open(last_run_path, 'wb'))
@@ -91,9 +89,7 @@ if last_updated != last_updated_api:
     pickle.dump(links, open(links_path, 'wb'))
 
     log_counts(total_count, unread_count)
-    print(unread_count)
-    print_random_unread_links(unread)
+    print_random_unread_links(unread_count, unread)
 else:
     unread = [link for link in links if (link['toread'] == 'yes')]
-    print(unread_count)
-    print_random_unread_links(unread)
+    print_random_unread_links(unread_count, unread)
