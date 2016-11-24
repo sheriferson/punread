@@ -20,13 +20,13 @@ last_run_path = os.path.join(pathToMe, 'lastrun.timestamp')
 backup_file = '/Users/sherif/persanalytics/data/unread_pinboard_counts.csv'
 
 def print_random_unread_links(count, unread, n = 30):
-    count = str(count) + ' | font=SourceSansPro-Regular color=cadetblue\n---\n'
+    count = str(count) + ' | font=SourceSansPro-Regular color=dodgerblue\n---\n'
     sys.stdout.buffer.write(count.encode('utf-8'))
     random_unread_indexes = random.sample(range(1, len(unread)), 30)
     for ii in random_unread_indexes:
         description = unread[ii]['description']
         description = description.replace("|", "｜")
-        link_entry = '📍 ' + description + " | href=" + unread[ii]['href'] + " font=SourceSansPro-Regular color=cadetblue\n"
+        link_entry = '📍 ' + description + " | href=" + unread[ii]['href'] + " font=SourceSansPro-Regular color=dodgerblue\n"
         sys.stdout.buffer.write(link_entry.encode('utf-8'))
 
 def log_counts(total_count, unread_count):
