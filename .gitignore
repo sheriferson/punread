@@ -4,3 +4,6 @@ lastupdated.timestamp
 lastrun.timestamp
 unread.count
 links
+*.ipynb
+.ipynb_checkpoints
+.DS_Store
