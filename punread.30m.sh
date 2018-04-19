@@ -7,7 +7,7 @@
 # <bitbar.dependencies>python</bitbar.dependencies>
 # <bitbar.abouturl>https://github.com/sheriferson/punread</bitbar.abouturl>
 
-links=$(/usr/local/bin/python3 /Users/sherif/projects/punread/punread.py)
+links=$(/usr/local/bin/python3 /Users/sherif/projects/punread/punread.py 5)
 echo "$links"
 
 echo "---"
